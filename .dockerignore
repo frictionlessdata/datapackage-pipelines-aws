@@ -1,0 +1,6 @@
+.git/
+.idea/
+datapacakge_pipelines_aws.egg-info/
+tests/
+.dpp.db
+
