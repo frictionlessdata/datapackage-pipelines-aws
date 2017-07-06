@@ -18,8 +18,8 @@ class S3Dumper(CSVDumper):
 
     def write_file_to_output(self, filename, path):
         key = helpers.generate_path(path, self.base_path, self.datapackage)
-        self.client.put_object(Body=open(filename, 'rb'),
-                                                    Bucket=self.bucket, Key=key)
+        self.client.put_object(
+            Body=open(filename, 'rb'), Bucket=self.bucket, Key=key)
 
 
 S3Dumper()()
