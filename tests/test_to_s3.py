@@ -49,7 +49,7 @@ class TestToS3Proccessor(unittest.TestCase):
         # Path to the processor we want to test
         self.processor_dir = \
             os.path.dirname(datapackage_pipelines_aws.processors.__file__)
-        self.processor_path = os.path.join(self.processor_dir, 'to_s3.py')
+        self.processor_path = os.path.join(self.processor_dir, 'dump', 'to_s3.py')
 
     @mock_s3
     def test_puts_datapackage_on_s3(self):
