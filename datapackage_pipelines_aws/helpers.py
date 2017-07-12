@@ -7,7 +7,7 @@ def generate_path(file_path, base_path='', datapackage={}):
     format_params.update(datapackage)
     try:
         base_path = base_path.format(**format_params)
-    except KeyError:
-        logging.error('datapackage.json is missing property: %s' % KeyError)
+    except KeyError as e:
+        logging.exception('datapackage.json is missing a property')
         raise
     return os.path.join(base_path, file_path)
