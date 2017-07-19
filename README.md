@@ -27,6 +27,7 @@ Saves the DataPackage to AWS S3.
 _Parameters:_
 
 * `bucket` - Name of the bucket where DataPackage will be stored (should already be created!)
+* `acl` - ACL to provide the uploaded files. Default is 'public-read' (see (`boto3` docs)[http://boto3.readthedocs.io/en/latest/reference/services/s3.html#S3.Client.put_object] for more info).
 * `path` - Path (key/prefix) to the DataPackage. May contain format string available for `datapackage.json` Eg: `my/example/path/{owner}/{name}/{version}`
 
 
@@ -46,15 +47,16 @@ datahub:
         url: http://example.com/my-datapackage/datapackage.json
         resource: my-resource
     -
-      run: aws.to_s3
+      run: aws.dump.to_s3
       parameters:
         bucket: my.bucket.name
         path: path/{owner}/{name}/{version}
     -
-      run: aws.to_s3
+      run: aws.dump.to_s3
       parameters:
         bucket: my.another.bucket
         path: another/path/{version}
+        acl: private
 ```
 
 Executing pipeline above will save DataPackage in the following directories on S3:
