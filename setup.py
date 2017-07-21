@@ -18,7 +18,7 @@ def read(*paths):
 PACKAGE = 'datapackage_pipelines_aws'
 NAME = PACKAGE.replace('_', '-')
 INSTALL_REQUIRES = [
-    'datapackage-pipelines',
+    'datapackage-pipelines>=1.1.1',
     'boto3',
 ]
 TESTS_REQUIRE = [

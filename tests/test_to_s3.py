@@ -90,5 +90,5 @@ class TestToS3Proccessor(unittest.TestCase):
         # Check csv content
         content = s3.Object(self.bucket, csv_path).get()['Body']\
             .read().decode("utf-8")
-        expected_csv = 'Date,Name\r\n0001-01-01 00:00:00,Name\r\n'
+        expected_csv = 'Date,Name\r\n0001-01-01,Name\r\n'
         self.assertEquals(content, expected_csv)

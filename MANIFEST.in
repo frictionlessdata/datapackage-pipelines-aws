@@ -8,3 +8,4 @@ include pylama.ini
 include pytest.ini
 include README.md
 include tox.ini
+prune .tox

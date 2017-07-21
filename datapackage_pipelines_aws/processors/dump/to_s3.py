@@ -1,10 +1,10 @@
 import boto3
 
-from datapackage_pipelines.lib.dump.dumper_base import CSVDumper
+from datapackage_pipelines.lib.dump.dumper_base import FileDumper
 from datapackage_pipelines_aws import helpers
 
 
-class S3Dumper(CSVDumper):
+class S3Dumper(FileDumper):
 
     def initialize(self, params):
         super(S3Dumper, self).initialize(params)
@@ -13,7 +13,8 @@ class S3Dumper(CSVDumper):
         self.client = boto3.client('s3')
         self.base_path = params.get('path', '')
 
-    def prepare_datapackage(self, datapackage, _):
+    def prepare_datapackage(self, datapackage, params):
+        super(S3Dumper, self).prepare_datapackage(datapackage, params)
         self.datapackage = datapackage
         return datapackage
 
