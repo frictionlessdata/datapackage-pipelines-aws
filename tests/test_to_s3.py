@@ -61,7 +61,7 @@ class TestToS3Proccessor(unittest.TestCase):
         class TempList(list):
             pass
 
-        res =  TempList([{'Date': datetime.datetime(1, 1, 1), 'Name': 'Name'}])
+        res =  TempList([{'Date': datetime.datetime(2001, 2, 3), 'Name': 'Name'}])
         res.spec = self.resources[0]
         res_iter = [res]
 
@@ -90,5 +90,5 @@ class TestToS3Proccessor(unittest.TestCase):
         # Check csv content
         content = s3.Object(self.bucket, csv_path).get()['Body']\
             .read().decode("utf-8")
-        expected_csv = 'Date,Name\r\n0001-01-01,Name\r\n'
+        expected_csv = 'Date,Name\r\n2001-02-03,Name\r\n'
         self.assertEquals(content, expected_csv)
