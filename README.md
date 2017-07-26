@@ -11,23 +11,23 @@ pip install -e .
 
 ## Usage
 
-You can use datapackage-pipelines-aws as a plugin for (dpp)[https://github.com/frictionlessdata/datapackage-pipelines#datapackage-pipelines]. In pipeline-spec.yaml it will look like this
+You can use datapackage-pipelines-aws as a plugin for [dpp](https://github.com/frictionlessdata/datapackage-pipelines#datapackage-pipelines). In pipeline-spec.yaml it will look like this
 
 ```yaml
   ...
-  - run: aws.to_s3
+  - run: aws.dump.to_s3
 ```
 
-You will need AWS credentials to be set up. See (the guide to set up the credentials)[http://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/credentials.html]
+You will need AWS credentials to be set up. See [the guide to set up the credentials](http://docs.aws.amazon.com/sdk-for-java/v1/developer-guide/credentials.html)
 
-### to_s3
+### dump.to_s3
 
 Saves the DataPackage to AWS S3.
 
 _Parameters:_
 
 * `bucket` - Name of the bucket where DataPackage will be stored (should already be created!)
-* `acl` - ACL to provide the uploaded files. Default is 'public-read' (see (`boto3` docs)[http://boto3.readthedocs.io/en/latest/reference/services/s3.html#S3.Client.put_object] for more info).
+* `acl` - ACL to provide the uploaded files. Default is 'public-read' (see [boto3 docs](http://boto3.readthedocs.io/en/latest/reference/services/s3.html#S3.Client.put_object) for more info).
 * `path` - Path (key/prefix) to the DataPackage. May contain format string available for `datapackage.json` Eg: `my/example/path/{owner}/{name}/{version}`
 
 
