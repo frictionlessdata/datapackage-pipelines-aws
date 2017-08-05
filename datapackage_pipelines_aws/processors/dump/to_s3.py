@@ -27,4 +27,5 @@ class S3Dumper(FileDumper):
             Key=key)
 
 
-S3Dumper()()
+if __name__ == '__main__':
+    S3Dumper()()
