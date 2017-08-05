@@ -44,7 +44,8 @@ class TestToS3Proccessor(unittest.TestCase):
         }
         self.params = {
             'bucket': self.bucket,
-            'path': 'my/test/path/{owner}/{name}/{version}'
+            'path': 'my/test/path/{owner}/{name}/{version}',
+            'content_type': 'application/my-made-up-media-type'
         }
         # Path to the processor we want to test
         self.processor_dir = \
@@ -82,13 +83,16 @@ class TestToS3Proccessor(unittest.TestCase):
         assert csv_path in keys
 
         # Check datapackage.json content
-        content = s3.Object(self.bucket, dp_path).get()['Body']\
-            .read().decode("utf-8")
+        dpjson = s3.Object(self.bucket, dp_path).get()
+        content = dpjson['Body'].read().decode("utf-8")
         self.assertEquals(json.loads(content)['owner'], 'me')
         self.assertEquals(json.loads(content)['name'], 'my-datapackage')
+        self.assertEqual(dpjson['ContentType'], self.params['content_type'])
 
         # Check csv content
-        content = s3.Object(self.bucket, csv_path).get()['Body']\
-            .read().decode("utf-8")
+        obj = s3.Object(self.bucket, csv_path).get()
+        content = obj['Body'].read().decode("utf-8")
         expected_csv = 'Date,Name\r\n2001-02-03,Name\r\n'
         self.assertEquals(content, expected_csv)
+        self.assertEqual(obj['ContentType'], self.params['content_type'])
+

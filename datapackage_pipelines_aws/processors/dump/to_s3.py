@@ -12,6 +12,7 @@ class S3Dumper(FileDumper):
         self.acl = params.get('acl', 'public-read')
         self.client = boto3.client('s3')
         self.base_path = params.get('path', '')
+        self.content_type = params.get('content_type', 'text/plain')
 
     def prepare_datapackage(self, datapackage, params):
         super(S3Dumper, self).prepare_datapackage(datapackage, params)
@@ -24,8 +25,9 @@ class S3Dumper(FileDumper):
             ACL=self.acl,
             Body=open(filename, 'rb'),
             Bucket=self.bucket,
+            ContentType=self.content_type,
             Key=key)
-
 
 if __name__ == '__main__':
     S3Dumper()()
+

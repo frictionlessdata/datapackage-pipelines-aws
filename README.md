@@ -31,7 +31,7 @@ _Parameters:_
 * `bucket` - Name of the bucket where DataPackage will be stored (should already be created!)
 * `acl` - ACL to provide the uploaded files. Default is 'public-read' (see [boto3 docs](http://boto3.readthedocs.io/en/latest/reference/services/s3.html#S3.Client.put_object) for more info).
 * `path` - Path (key/prefix) to the DataPackage. May contain format string available for `datapackage.json` Eg: `my/example/path/{owner}/{name}/{version}`
-
+* `content_type` - content type to use when storing files in S3. Defaults to text/plain (usual S3 default is binary/octet-stream but we prefer text/plain).
 
 _Example:_
 
