@@ -1,5 +1,7 @@
 # AWS Extensions for datapackage-pipelines
 
+[![Build Status](https://travis-ci.org/frictionlessdata/datapackage-pipelines-aws.svg?branch=master)](https://travis-ci.org/frictionlessdata/datapackage-pipelines-aws)
+
 ## Install
 
 ```
