@@ -2,6 +2,7 @@ import unittest
 
 from datapackage_pipelines_aws import helpers
 
+
 class TestToS3Proccessor(unittest.TestCase):
     def test_generate_path(self):
         inpath = 'datapackage.json'

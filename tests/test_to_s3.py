@@ -68,8 +68,8 @@ class TestToS3Proccessor(unittest.TestCase):
 
         spew_args, _ = mock_processor_test(self.processor_path,
                             (self.params,
-                            self.datapackage,
-                            res_iter))
+                             self.datapackage,
+                             res_iter))
 
         spew_res_iter = spew_args[1]
         # We need to actually read the rows to ecexute the iterator(s)
