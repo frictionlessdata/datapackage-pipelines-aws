@@ -15,6 +15,10 @@ import datapackage_pipelines_aws.processors
 import logging
 log = logging.getLogger(__name__)
 
+os.environ['AWS_ACCESS_KEY_ID']="HJW6280KHBS2Y105STGG"
+os.environ['AWS_SECRET_ACCESS_KEY']="rsAuRptRwTTuSocsdBCRHIToldPkPefpb2Vl/ybG"
+os.environ['S3_ENDPOINT_URL']="http://localhost:9000"
+
 
 class TestToS3Proccessor(unittest.TestCase):
     def setUp(self):
@@ -23,6 +27,7 @@ class TestToS3Proccessor(unittest.TestCase):
             'name': 'resource',
             "format": "csv",
             "path": "data/test.csv",
+            "dpp:streaming": True,
             "schema": {
                 "fields": [
                     {
@@ -52,11 +57,9 @@ class TestToS3Proccessor(unittest.TestCase):
             os.path.dirname(datapackage_pipelines_aws.processors.__file__)
         self.processor_path = os.path.join(self.processor_dir, 'dump', 'to_s3.py')
 
-    @mock_s3
     def test_puts_datapackage_on_s3(self):
         # Should be in setup but requires mock
-        s3 = boto3.resource('s3')
-        s3.create_bucket(Bucket=self.bucket)
+        s3 = boto3.resource('s3', endpoint_url=os.environ['S3_ENDPOINT_URL'])
         bucket = s3.Bucket(self.bucket)
 
         class TempList(list):
@@ -95,4 +98,3 @@ class TestToS3Proccessor(unittest.TestCase):
         expected_csv = 'Date,Name\r\n2001-02-03,Name\r\n'
         self.assertEquals(content, expected_csv)
         self.assertEqual(obj['ContentType'], self.params['content_type'])
-

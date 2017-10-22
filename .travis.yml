@@ -24,6 +24,7 @@ install:
   - pip install coveralls
 
 script:
+  - sh tests/minio/test_minio.sh
   - make test
 
 after_success:
