@@ -15,6 +15,7 @@ class S3Dumper(FileDumper):
         self.client = boto3.client('s3', endpoint_url=endpoint_url)
         self.base_path = params.get('path', '')
         self.content_type = params.get('content_type', 'text/plain')
+        self.add_filehash_to_path = params.get('add-filehash-to-path')
 
     def prepare_datapackage(self, datapackage, params):
         super(S3Dumper, self).prepare_datapackage(datapackage, params)
@@ -24,6 +25,9 @@ class S3Dumper(FileDumper):
     def write_file_to_output(self, filename, path, allow_create_bucket=True):
         key = generate_path(path, self.base_path, self.datapackage)
         try:
+            objs = self.client.list_objects_v2(Bucket=self.bucket, Prefix=key)
+            if objs.get('KeyCount') and self.add_filehash_to_path:
+                return
             self.client.put_object(
                 ACL=self.acl,
                 Body=open(filename, 'rb'),
