@@ -26,7 +26,9 @@ class S3Dumper(FileDumper):
         key = generate_path(path, self.base_path, self.datapackage)
         try:
             objs = self.client.list_objects_v2(Bucket=self.bucket, Prefix=key)
-            if objs.get('KeyCount') and self.add_filehash_to_path:
+            if filename != 'datapackage.json' and \
+                    objs.get('KeyCount') and \
+                    self.add_filehash_to_path:
                 return
             self.client.put_object(
                 ACL=self.acl,
