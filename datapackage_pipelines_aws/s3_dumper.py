@@ -1,5 +1,7 @@
 import boto3
 import os
+
+import logging
 from datapackage_pipelines.lib.dump.dumper_base import FileDumper
 
 from datapackage_pipelines_aws.helpers import generate_path
@@ -26,9 +28,10 @@ class S3Dumper(FileDumper):
         key = generate_path(path, self.base_path, self.datapackage)
         try:
             objs = self.client.list_objects_v2(Bucket=self.bucket, Prefix=key)
-            if (not filename.endswith('datapackage.json')) and \
+            if (not path.endswith('datapackage.json')) and \
                     objs.get('KeyCount') and \
                     self.add_filehash_to_path:
+                logging.warning('Skipping upload of file %s as it already exists', path)
                 return
             self.client.put_object(
                 ACL=self.acl,
