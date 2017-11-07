@@ -31,7 +31,8 @@ class S3Dumper(FileDumper):
             if (not path.endswith('datapackage.json')) and \
                     objs.get('KeyCount') and \
                     self.add_filehash_to_path:
-                logging.warning('Skipping upload of file %s as it already exists', path)
+                logging.warning(
+                    'Skipping upload of file %s as it already exists', path)
                 return
             self.client.put_object(
                 ACL=self.acl,
