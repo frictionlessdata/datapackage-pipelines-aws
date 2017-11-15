@@ -2,6 +2,7 @@ import json
 import os
 import unittest
 import datetime
+import requests
 
 from moto import mock_s3
 import boto3
@@ -56,6 +57,58 @@ class TestToS3Proccessor(unittest.TestCase):
         self.processor_dir = \
             os.path.dirname(datapackage_pipelines_aws.processors.__file__)
         self.processor_path = os.path.join(self.processor_dir, 'dump', 'to_s3.py')
+
+    def test_changes_acl(self):
+        # Should be in setup but requires mock
+        s3 = boto3.client('s3', endpoint_url=os.environ['S3_ENDPOINT_URL'])
+        bucket = 'my.private.bucket'
+        try:
+            s3.create_bucket(ACL='public-read', Bucket=bucket)
+        except:
+            pass
+
+        readme =  'my/private/datasets/README.md'
+        dp = 'my/private/datasets/datapackage.json'
+        data = 'my/private/datasets/data/mydata.csv'
+        other = 'my/non-private/datasets/data/mydata.csv'
+        s3.put_object(Body="README", Bucket=bucket, Key=readme)
+        s3.put_object(Body='{"name": "testing"}', Bucket=bucket, Key=dp)
+        s3.put_object(Body="col1,col2\n1,2", Bucket=bucket, Key=data)
+        s3.put_object(Body="col1,col2\n1,2", Bucket=bucket, Key=other)
+
+        params = {
+            'bucket': bucket,
+            'path': 'my/private/datasets',
+            'acl': 'private'
+        }
+
+        # Make sure they are public
+        url = '{}/{}/{}'.format(os.environ['S3_ENDPOINT_URL'], bucket, readme)
+        self.assertEqual(requests.get(url).status_code, 200)
+        url = '{}/{}/{}'.format(os.environ['S3_ENDPOINT_URL'], bucket, dp)
+        self.assertEqual(requests.get(url).status_code, 200)
+        url = '{}/{}/{}'.format(os.environ['S3_ENDPOINT_URL'], bucket, data)
+        self.assertEqual(requests.get(url).status_code, 200)
+        url = '{}/{}/{}'.format(os.environ['S3_ENDPOINT_URL'], bucket, other)
+        self.assertEqual(requests.get(url).status_code, 200)
+
+        processor_dir = os.path.dirname(datapackage_pipelines_aws.processors.__file__)
+        processor_path = os.path.join(processor_dir, 'change_acl.py')
+        spew_args, _ = mock_processor_test(processor_path,
+                            (params,
+                             {'name': 'test', 'resources': []},
+                             [[]]))
+
+        # Now they should be forbidden
+        url = '{}/{}/{}'.format(os.environ['S3_ENDPOINT_URL'], bucket, readme)
+        self.assertEqual(requests.get(url).status_code, 403)
+        url = '{}/{}/{}'.format(os.environ['S3_ENDPOINT_URL'], bucket, dp)
+        self.assertEqual(requests.get(url).status_code, 403)
+        url = '{}/{}/{}'.format(os.environ['S3_ENDPOINT_URL'], bucket, data)
+        self.assertEqual(requests.get(url).status_code, 403)
+        # This one should remain publick
+        url = '{}/{}/{}'.format(os.environ['S3_ENDPOINT_URL'], bucket, other)
+        self.assertEqual(requests.get(url).status_code, 200)
 
     def test_puts_datapackage_on_s3(self):
         # Should be in setup but requires mock
