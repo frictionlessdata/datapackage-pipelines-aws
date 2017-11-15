@@ -18,7 +18,7 @@ log = logging.getLogger(__name__)
 
 os.environ['AWS_ACCESS_KEY_ID']="HJW6280KHBS2Y105STGG"
 os.environ['AWS_SECRET_ACCESS_KEY']="rsAuRptRwTTuSocsdBCRHIToldPkPefpb2Vl/ybG"
-os.environ['S3_ENDPOINT_URL']="http://localhost:9000"
+os.environ['S3_ENDPOINT_URL']="http://localhost:5000"
 
 
 class TestToS3Proccessor(unittest.TestCase):
@@ -71,10 +71,10 @@ class TestToS3Proccessor(unittest.TestCase):
         dp = 'my/private/datasets/datapackage.json'
         data = 'my/private/datasets/data/mydata.csv'
         other = 'my/non-private/datasets/data/mydata.csv'
-        s3.put_object(Body="README", Bucket=bucket, Key=readme)
-        s3.put_object(Body='{"name": "testing"}', Bucket=bucket, Key=dp)
-        s3.put_object(Body="col1,col2\n1,2", Bucket=bucket, Key=data)
-        s3.put_object(Body="col1,col2\n1,2", Bucket=bucket, Key=other)
+        s3.put_object(Body="README", Bucket=bucket, Key=readme, ACL='public-read')
+        s3.put_object(Body='{"name": "testing"}', Bucket=bucket, Key=dp, ACL='public-read')
+        s3.put_object(Body="col1,col2\n1,2", Bucket=bucket, Key=data, ACL='public-read')
+        s3.put_object(Body="col1,col2\n1,2", Bucket=bucket, Key=other, ACL='public-read')
 
         params = {
             'bucket': bucket,

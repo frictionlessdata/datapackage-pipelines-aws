@@ -22,10 +22,15 @@ env:
 install:
   - make install
   - pip install coveralls
+  - pip install moto
 
 script:
-  - sh tests/minio/test_minio.sh
   - make test
+
+before_script:
+  - moto_server &
+  - sleep 30
+  - curl localhost:5000
 
 after_success:
   - coveralls
