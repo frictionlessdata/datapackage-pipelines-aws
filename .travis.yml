@@ -22,7 +22,7 @@ env:
 install:
   - make install
   - pip install coveralls
-  - pip install moto
+  - pip install -r requirements.dev.txt
 
 script:
   - make test
