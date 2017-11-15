@@ -1,0 +1,3 @@
+-r requirements.txt
+moto
+google-compute-engine
