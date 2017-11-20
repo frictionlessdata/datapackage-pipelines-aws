@@ -64,3 +64,47 @@ datahub:
 Executing pipeline above will save DataPackage in the following directories on S3:
 * my.bucket.name/path/my-name/py-package-name/latest/...
 * my.bucket.name/another/path/latest/...
+
+
+### change_acl
+
+Changes ACL of object in given Bucket with given path aka prefix.
+
+_Parameters:_
+
+* `bucket` - Name of the bucket where objects are stored
+* `acl` - Available options `'private'|'public-read'|'public-read-write'|'authenticated-read'|'aws-exec-read'|'bucket-owner-read'|'bucket-owner-full-control'`
+* `path` - Path (key/prefix) to the DataPackage.
+
+_Example:_
+
+```yaml
+datahub:
+  title: datahub-to-s3
+  pipeline:
+    -
+      run: load_metadata
+      parameters:
+        url: http://example.com/my-datapackage/datapackage.json
+    -
+      run: load_resource
+      parameters:
+        url: http://example.com/my-datapackage/datapackage.json
+        resource: my-resource
+    -
+      run: aws.dump.to_s3
+      parameters:
+        bucket: my.bucket.name
+        path: path/{owner}/{name}/{version}
+    -
+      run: aws.change_acl
+      parameters:
+        bucket: my.another.bucket
+        path: path/
+        acl: private
+```
+
+Executing pipeline above will save DataPackage on S3 and change ACL to private to all keys prefixed `path`:
+
+**Note:** If path parameter is not set this will change ACL for all object in given bucket
+  
