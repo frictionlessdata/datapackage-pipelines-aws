@@ -110,6 +110,31 @@ class TestToS3Proccessor(unittest.TestCase):
         url = '{}/{}/{}'.format(os.environ['S3_ENDPOINT_URL'], bucket, other)
         self.assertEqual(requests.get(url).status_code, 200)
 
+    def test_achanges_acl_handles_non_existing_keys(self):
+        # Should be in setup but requires mock
+        s3 = boto3.client('s3', endpoint_url=os.environ['S3_ENDPOINT_URL'])
+        bucket = 'my.private.bucket'
+        try:
+            s3.create_bucket(ACL='public-read', Bucket=bucket)
+        except:
+            pass
+
+        params = {
+            'bucket': bucket,
+            'path': 'my/non-existing/datasets',
+            'acl': 'private'
+        }
+
+        processor_dir = os.path.dirname(datapackage_pipelines_aws.processors.__file__)
+        processor_path = os.path.join(processor_dir, 'change_acl.py')
+        spew_args, _ = mock_processor_test(processor_path,
+                            (params,
+                             {'name': 'test', 'resources': []},
+                             [[]]))
+        dp = spew_args[0]
+        # Just make sure processor executed without errors (must not do anything)
+        self.assertEqual(dp['name'], 'test')
+
     def test_puts_datapackage_on_s3(self):
         # Should be in setup but requires mock
         s3 = boto3.resource('s3', endpoint_url=os.environ['S3_ENDPOINT_URL'])

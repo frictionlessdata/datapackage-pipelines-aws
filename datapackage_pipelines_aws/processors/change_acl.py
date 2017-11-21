@@ -13,7 +13,8 @@ def change_acl():
     key = parameters.get('path', '')
     acl = parameters['acl']
     objs = s3.list_objects(Bucket=bucket, Prefix=key)
-    keys = [content['Key'] for content in objs['Contents']]
+    contents = objs.get('Contents', [])
+    keys = [content['Key'] for content in contents]
     for obj in keys:
         s3.put_object_acl(Bucket=bucket, Key=obj, ACL=acl)
 
