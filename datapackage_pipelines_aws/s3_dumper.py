@@ -34,7 +34,7 @@ class S3Dumper(FileDumper):
                 logging.warning(
                     'Skipping upload of file %s as it already exists', path)
                 return
-            self.client.put_object(
+            self.put_object(
                 ACL=self.acl,
                 Body=open(filename, 'rb'),
                 Bucket=self.bucket,
@@ -50,3 +50,6 @@ class S3Dumper(FileDumper):
                                           allow_create_bucket=False)
             else:
                 raise
+
+    def put_object(self, **kwargs):
+        return self.client(**kwargs)
