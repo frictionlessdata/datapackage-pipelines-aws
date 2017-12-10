@@ -52,4 +52,4 @@ class S3Dumper(FileDumper):
                 raise
 
     def put_object(self, **kwargs):
-        return self.client(**kwargs)
+        return self.client.put_object(**kwargs)
