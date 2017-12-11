@@ -40,7 +40,8 @@ class S3Dumper(FileDumper):
                 Bucket=self.bucket,
                 ContentType=self.content_type,
                 Key=key)
-            return os.path.join(self.endpoint_url or 'https://s3.amazonaws.com', self.bucket, key)
+            endpoint = self.endpoint_url or 'https://s3.amazonaws.com'
+            return os.path.join(endpoint, self.bucket, key)
         except self.client.exceptions.NoSuchBucket:
             if os.environ.get("S3_ENDPOINT_URL") and allow_create_bucket:
                 # if you provided a custom endpoint url, we assume you are
