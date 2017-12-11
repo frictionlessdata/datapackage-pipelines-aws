@@ -47,8 +47,8 @@ class S3Dumper(FileDumper):
                 # using an s3 compatible server, in this case, creating a
                 # bucket should be cheap and easy, so we can do it here
                 self.client.create_bucket(Bucket=self.bucket)
-                self.write_file_to_output(filename, path,
-                                          allow_create_bucket=False)
+                return self.write_file_to_output(filename, path,
+                                                 allow_create_bucket=False)
             else:
                 raise
 
