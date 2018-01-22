@@ -1,4 +1,5 @@
 import boto3
+import mimetypes
 import os
 
 import logging
@@ -16,7 +17,7 @@ class S3Dumper(FileDumper):
         self.endpoint_url = os.environ.get("S3_ENDPOINT_URL")
         self.client = boto3.client('s3', endpoint_url=self.endpoint_url)
         self.base_path = params.get('path', '')
-        self.content_type = params.get('content_type', 'text/plain')
+        self.content_type = params.get('content_type')
         self.add_filehash_to_path = params.get('add-filehash-to-path')
 
     def prepare_datapackage(self, datapackage, params):
@@ -26,6 +27,7 @@ class S3Dumper(FileDumper):
 
     def write_file_to_output(self, filename, path, allow_create_bucket=True):
         key = generate_path(path, self.base_path, self.datapackage)
+        content_type, _ = mimetypes.guess_type(key)
         try:
             objs = self.client.list_objects_v2(Bucket=self.bucket, Prefix=key)
             if (not path.endswith('datapackage.json')) and \
@@ -38,7 +40,7 @@ class S3Dumper(FileDumper):
                 ACL=self.acl,
                 Body=open(filename, 'rb'),
                 Bucket=self.bucket,
-                ContentType=self.content_type,
+                ContentType=self.content_type or content_type or 'text/plain',
                 Key=key)
             endpoint = self.endpoint_url or 'https://s3.amazonaws.com'
             return os.path.join(endpoint, self.bucket, key)
