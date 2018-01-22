@@ -1,6 +1,6 @@
 import os
 import boto3
-from botocore import errorfactory
+from botocore import errorfactory  # noqa
 
 from datapackage_pipelines.wrapper import ingest, spew
 
@@ -15,7 +15,7 @@ def change_acl():
     acl = parameters['acl']
     try:
         objs = s3.list_objects(Bucket=bucket, Prefix=key)
-    except:
+    except Exception:
         objs = {}
     contents = objs.get('Contents', [])
     keys = [content['Key'] for content in contents]
