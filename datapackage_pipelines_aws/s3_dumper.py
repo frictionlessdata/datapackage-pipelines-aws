@@ -14,7 +14,9 @@ class S3Dumper(FileDumper):
         super(S3Dumper, self).initialize(params)
         self.bucket = params['bucket']
         self.acl = params.get('acl', 'public-read')
-        self.endpoint_url = params.get('endpoint_url') or os.environ.get('S3_ENDPOINT_URL') or 'https://s3.amazonaws.com'
+        self.endpoint_url = (params.get('endpoint_url') or
+                             os.environ.get('S3_ENDPOINT_URL') or
+                             'https://s3.amazonaws.com')
         self.client = boto3.client('s3', endpoint_url=self.endpoint_url)
         self.base_path = params.get('path', '')
         self.content_type = params.get('content_type')
