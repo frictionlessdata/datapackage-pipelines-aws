@@ -26,7 +26,7 @@ def change_acl():
             if len(contents):
                 marker = contents[-1]['Key']
         except Exception:
-            listing = False
+            is_truncated = False
     keys = [content['Key'] for content in contents]
     for obj in keys:
         s3.put_object_acl(Bucket=bucket, Key=obj, ACL=acl)
