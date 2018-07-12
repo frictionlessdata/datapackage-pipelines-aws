@@ -17,7 +17,7 @@ def change_acl():
     is_truncated = True
     contents = []
     marker = ''
-    # Consider that list_objects returns max 1000 keys (even if MaxKeys is >1000)
+    # list_objects returns max 1000 keys (even if MaxKeys is >1000)
     while is_truncated:
         try:
             objs = s3.list_objects(Bucket=bucket, Prefix=key, Marker=marker)
