@@ -13,11 +13,20 @@ def change_acl():
     bucket = parameters['bucket']
     key = parameters.get('path', '')
     acl = parameters['acl']
-    try:
-        objs = s3.list_objects(Bucket=bucket, Prefix=key)
-    except Exception:
-        objs = {}
-    contents = objs.get('Contents', [])
+
+    is_truncated = True
+    contents = []
+    marker = ''
+    # Consider that list_objects returns max 1000 keys (even if MaxKeys is >1000)
+    while is_truncated:
+        try:
+            objs = s3.list_objects(Bucket=bucket, Prefix=key, Marker=marker)
+            is_truncated = objs.get('IsTruncated')
+            contents += objs.get('Contents', [])
+            if len(contents):
+                marker = contents[-1]['Key']
+        except Exception:
+            listing = False
     keys = [content['Key'] for content in contents]
     for obj in keys:
         s3.put_object_acl(Bucket=bucket, Key=obj, ACL=acl)
